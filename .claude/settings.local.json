@@ -17,7 +17,9 @@
       "Bash(npx shadcn@4.5.0 add @shadcn/chart @shadcn/sidebar -y)",
       "Bash(npm run *)",
       "Bash(node *)",
-      "Bash(xargs wc *)"
+      "Bash(xargs wc *)",
+      "Bash(cat)",
+      "Read(//tmp/**)"
     ]
   }
 }
