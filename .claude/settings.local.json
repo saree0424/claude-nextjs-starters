@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm info *)",
+      "Bash(npx shadcn@4.5.0 --help)",
+      "Bash(npx shadcn@4.5.0 add --help)",
+      "Bash(npx shadcn@4.5.0 init --help)",
+      "Bash(npx shadcn@4.5.0 info)",
+      "Bash(npx shadcn@4.5.0 list)",
+      "Bash(npx shadcn@4.5.0 view @shadcn/button)",
+      "Bash(npm install *)",
+      "Bash(npx shadcn@4.5.0 add @shadcn/card @shadcn/badge @shadcn/input @shadcn/label @shadcn/separator @shadcn/avatar @shadcn/skeleton -y)",
+      "Bash(npx shadcn@4.5.0 add @shadcn/dialog @shadcn/alert-dialog @shadcn/dropdown-menu @shadcn/sheet @shadcn/sonner @shadcn/tooltip @shadcn/alert -y)",
+      "Bash(npx shadcn@4.5.0 add @shadcn/form @shadcn/select @shadcn/textarea @shadcn/checkbox @shadcn/switch @shadcn/progress -y)",
+      "Bash(npx shadcn@4.5.0 add @shadcn/form -y)",
+      "Bash(npx shadcn@4.5.0 add @shadcn/table @shadcn/tabs @shadcn/breadcrumb @shadcn/scroll-area @shadcn/command @shadcn/pagination -y)",
+      "Bash(npx shadcn@4.5.0 add @shadcn/chart @shadcn/sidebar -y)",
+      "Bash(npm run *)",
+      "Bash(node *)",
+      "Bash(xargs wc *)"
+    ]
+  }
+}
