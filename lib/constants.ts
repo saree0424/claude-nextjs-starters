@@ -18,6 +18,7 @@ export const navLinks: NavItem[] = [
   { title: "홈", href: "/" },
   { title: "기능", href: "/#features" },
   { title: "통계", href: "/#stats" },
+  { title: "예제", href: "/examples" },
   { title: "대시보드", href: "/dashboard" },
 ]
 

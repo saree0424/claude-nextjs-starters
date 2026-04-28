@@ -19,7 +19,18 @@
       "Bash(node *)",
       "Bash(xargs wc *)",
       "Bash(cat)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(xargs grep *)",
+      "Bash(npx next *)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('mcpServers', {}\\), indent=2\\)\\)\")",
+      "Bash(npx --yes @modelcontextprotocol/server-sequential-thinking --version)",
+      "Bash(npm list *)",
+      "Bash(npm root *)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('main:', d.get\\('main'\\)\\); print\\('bin:', d.get\\('bin'\\)\\)\")",
+      "Bash(npx -y @modelcontextprotocol/server-sequential-thinking --version)",
+      "Bash(echo \"exit code: $?\")",
+      "Skill(update-config)",
+      "Skill(update-config:*)"
     ]
   }
 }
