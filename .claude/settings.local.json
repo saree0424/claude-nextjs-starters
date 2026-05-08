@@ -30,7 +30,10 @@
       "Bash(npx -y @modelcontextprotocol/server-sequential-thinking --version)",
       "Bash(echo \"exit code: $?\")",
       "Skill(update-config)",
-      "Skill(update-config:*)"
+      "Skill(update-config:*)",
+      "Bash(git rm *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
