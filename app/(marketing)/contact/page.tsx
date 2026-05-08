@@ -2,9 +2,12 @@
 
 // 문의하기 페이지 - 연락처 정보와 문의 폼을 담은 클라이언트 컴포넌트
 // 참조: Select, Textarea, Input을 활용한 폼 구성, 2열 레이아웃 예시
-// "use client" 선언 이유: Select, 폼 상태 관리가 필요하기 때문
+// "use client" 선언 이유: react-hook-form 상태 관리, Select Controller 필요
 
 import { useState } from "react"
+import { useForm, Controller } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { toast } from "sonner"
 import { Clock, Mail, MapPin, Phone, Send } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -20,6 +23,7 @@ import {
 } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
+import { contactSchema, type ContactFormValues } from "@/lib/validations"
 
 // 연락처 정보 타입 정의
 interface ContactInfo {
@@ -53,19 +57,22 @@ const contactInfoItems: ContactInfo[] = [
 ]
 
 export default function ContactPage() {
-  // 폼 제출 상태 관리
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
 
-  // 폼 제출 핸들러 (실제 구현 시 API 연동)
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm<ContactFormValues>({
+    resolver: zodResolver(contactSchema),
+  })
 
-    // 실제 구현에서는 API 호출로 대체
+  const onSubmit = async (data: ContactFormValues) => {
+    // TODO: 실제 API 연동으로 교체 (예: await sendContactEmail(data))
     await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    setIsLoading(false)
+    console.log("문의 접수:", data)
+    toast.success("문의가 접수되었습니다. 빠른 시간 내에 답변 드리겠습니다.")
     setIsSubmitted(true)
   }
 
@@ -141,41 +148,68 @@ export default function ContactPage() {
                 </Button>
               </div>
             ) : (
-              // 문의 폼
-              <form onSubmit={handleSubmit} className="space-y-4">
+              // 문의 폼 — react-hook-form + zod 검증
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
                 {/* 이름과 이메일 - 2열 배치 */}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="name">이름 *</Label>
-                    <Input id="name" placeholder="홍길동" required />
+                    <Input id="name" placeholder="홍길동" {...register("name")} />
+                    {errors.name && (
+                      <p className="text-xs text-destructive">{errors.name.message}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">이메일 *</Label>
-                    <Input id="email" type="email" placeholder="hong@example.com" required />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="hong@example.com"
+                      {...register("email")}
+                    />
+                    {errors.email && (
+                      <p className="text-xs text-destructive">{errors.email.message}</p>
+                    )}
                   </div>
                 </div>
 
-                {/* 문의 유형 Select */}
+                {/* 문의 유형 Select — shadcn Select는 Controller로 연동 */}
                 <div className="space-y-2">
                   <Label htmlFor="inquiry-type">문의 유형 *</Label>
-                  <Select required>
-                    <SelectTrigger id="inquiry-type">
-                      <SelectValue placeholder="문의 유형을 선택해 주세요" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="general">일반 문의</SelectItem>
-                      <SelectItem value="technical">기술 지원</SelectItem>
-                      <SelectItem value="billing">결제 문의</SelectItem>
-                      <SelectItem value="partnership">파트너십</SelectItem>
-                      <SelectItem value="other">기타</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Controller
+                    name="inquiryType"
+                    control={control}
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger id="inquiry-type">
+                          <SelectValue placeholder="문의 유형을 선택해 주세요" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="general">일반 문의</SelectItem>
+                          <SelectItem value="technical">기술 지원</SelectItem>
+                          <SelectItem value="billing">결제 문의</SelectItem>
+                          <SelectItem value="partnership">파트너십</SelectItem>
+                          <SelectItem value="other">기타</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.inquiryType && (
+                    <p className="text-xs text-destructive">{errors.inquiryType.message}</p>
+                  )}
                 </div>
 
                 {/* 제목 */}
                 <div className="space-y-2">
                   <Label htmlFor="subject">제목 *</Label>
-                  <Input id="subject" placeholder="문의 제목을 입력해 주세요" required />
+                  <Input
+                    id="subject"
+                    placeholder="문의 제목을 입력해 주세요"
+                    {...register("subject")}
+                  />
+                  {errors.subject && (
+                    <p className="text-xs text-destructive">{errors.subject.message}</p>
+                  )}
                 </div>
 
                 {/* 메시지 Textarea */}
@@ -185,13 +219,16 @@ export default function ContactPage() {
                     id="message"
                     placeholder="문의 내용을 자세히 작성해 주세요..."
                     className="min-h-32 resize-none"
-                    required
+                    {...register("message")}
                   />
+                  {errors.message && (
+                    <p className="text-xs text-destructive">{errors.message.message}</p>
+                  )}
                 </div>
 
                 {/* 제출 버튼 */}
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? (
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? (
                     "전송 중..."
                   ) : (
                     <>

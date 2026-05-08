@@ -5,6 +5,9 @@
 // "use client" 선언 이유: Tabs 상태, Switch 토글, 폼 입력 상태 관리 필요
 
 import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { toast } from "sonner"
 import {
   Bell,
   Code2,
@@ -39,6 +42,75 @@ import {
 } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { DashboardHeader } from "@/components/layout/dashboard-header"
+import { changePasswordSchema, type ChangePasswordFormValues } from "@/lib/validations"
+
+// 비밀번호 변경 폼 — react-hook-form + zod 검증
+function ChangePasswordForm() {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<ChangePasswordFormValues>({
+    resolver: zodResolver(changePasswordSchema),
+  })
+
+  const onSubmit = async (data: ChangePasswordFormValues) => {
+    // TODO: 실제 API 연동으로 교체 (예: await updatePassword(data))
+    await new Promise((resolve) => setTimeout(resolve, 800))
+    console.log("비밀번호 변경 요청:", { currentPassword: data.currentPassword })
+    toast.success("비밀번호가 변경되었습니다")
+    reset()
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="currentPassword">현재 비밀번호</Label>
+          <Input
+            id="currentPassword"
+            type="password"
+            placeholder="현재 비밀번호 입력"
+            {...register("currentPassword")}
+          />
+          {errors.currentPassword && (
+            <p className="text-xs text-destructive">{errors.currentPassword.message}</p>
+          )}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="newPassword">새 비밀번호</Label>
+          <Input
+            id="newPassword"
+            type="password"
+            placeholder="새 비밀번호 입력 (8자 이상)"
+            {...register("newPassword")}
+          />
+          {errors.newPassword && (
+            <p className="text-xs text-destructive">{errors.newPassword.message}</p>
+          )}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="confirmPassword">새 비밀번호 확인</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            placeholder="새 비밀번호 재입력"
+            {...register("confirmPassword")}
+          />
+          {errors.confirmPassword && (
+            <p className="text-xs text-destructive">{errors.confirmPassword.message}</p>
+          )}
+        </div>
+      </CardContent>
+      <CardFooter className="border-t pt-4">
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "변경 중..." : "비밀번호 변경"}
+        </Button>
+      </CardFooter>
+    </form>
+  )
+}
 
 // 활성 세션 타입 정의
 interface ActiveSession {
@@ -255,23 +327,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="currentPassword">현재 비밀번호</Label>
-                  <Input id="currentPassword" type="password" placeholder="현재 비밀번호 입력" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="newPassword">새 비밀번호</Label>
-                  <Input id="newPassword" type="password" placeholder="새 비밀번호 입력 (8자 이상)" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">새 비밀번호 확인</Label>
-                  <Input id="confirmPassword" type="password" placeholder="새 비밀번호 재입력" />
-                </div>
-              </CardContent>
-              <CardFooter className="border-t pt-4">
-                <Button>비밀번호 변경</Button>
-              </CardFooter>
+              <ChangePasswordForm />
             </Card>
 
             {/* 2단계 인증 카드 */}
