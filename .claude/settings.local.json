@@ -38,7 +38,35 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\saree\\\\workspace\\\\claude-nextjs-starters\" -Recurse -Force)",
       "Bash(Select-Object -First 50)",
       "Bash(Format-Table FullName)",
-      "Bash(Remove-Item *)"
+      "Bash(Remove-Item *)",
+      "Bash(python3 *)",
+      "Bash(curl --version)",
+      "Bash(powershell.exe -NoProfile -Command ' *)",
+      "Bash(powershell.exe *)"
+    ]
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/.claude/hooks/notification-hook.ps1\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/.claude/hooks/stop-hook.ps1\""
+          }
+        ]
+      }
     ]
   }
 }
