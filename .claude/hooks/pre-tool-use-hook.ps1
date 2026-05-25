@@ -1,5 +1,10 @@
 ﻿# Claude Code PreToolUse 훅 - 위험 명령어 사전 감지 및 차단
 
+# 입출력 인코딩을 UTF-8로 설정
+[Console]::InputEncoding  = [System.Text.Encoding]::UTF8
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding           = [System.Text.Encoding]::UTF8
+
 # stdin에서 JSON 읽기
 $inputData = $input | Out-String
 $toolName = ""
@@ -89,8 +94,9 @@ if ($isBlocked -or $isWarning) {
         $status = "경고 (실행 허용)"
     }
 
-    # toolInput이 너무 길면 자르기
-    $displayInput = if ($toolInput.Length -gt 300) { $toolInput.Substring(0, 300) + "..." } else { $toolInput }
+    # 표시용: JSON 전체 대신 실제 명령어($checkTarget)를 사용해 한글 깨짐 방지
+    $displayRaw   = if ($checkTarget) { $checkTarget } else { $toolInput }
+    $displayInput = if ($displayRaw.Length -gt 300) { $displayRaw.Substring(0, 300) + "..." } else { $displayRaw }
 
     if ($webhookUrl) {
         $body = @{
