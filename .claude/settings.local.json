@@ -48,6 +48,17 @@
     ]
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre-tool-use-hook.ps1\""
+          }
+        ]
+      }
+    ],
     "Notification": [
       {
         "matcher": "*",

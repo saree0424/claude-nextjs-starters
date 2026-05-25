@@ -1,7 +1,14 @@
-﻿# Claude Code Stop 훅 - 작업 완료 알림
+﻿# Claude Code Stop 훅 - 작업 완료 알림 (작업 요약 포함)
 
-# stdin 소비
-$null = $input
+# stdin에서 JSON 읽기
+$inputData = $input | Out-String
+$summary = ""
+try {
+    $json = $inputData | ConvertFrom-Json
+    # Claude Code가 전달하는 result 또는 message 필드 파싱
+    if ($json.result) { $summary = $json.result }
+    elseif ($json.message) { $summary = $json.message }
+} catch {}
 
 # .env 파일에서 SLACK_WEBHOOK_URL 로드
 $envFile = Join-Path $env:CLAUDE_PROJECT_DIR ".env"
@@ -25,10 +32,20 @@ if (-not $webhookUrl) {
 $projectName = Split-Path $env:CLAUDE_PROJECT_DIR -Leaf
 $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 
+# 최근 git 커밋 메시지 가져오기 (작업 맥락 파악용)
+$lastCommit = ""
+try {
+    $lastCommit = & git -C $env:CLAUDE_PROJECT_DIR log -1 --pretty=format:"%s" 2>$null
+} catch {}
+
+# 요약 텍스트 구성
+$summaryLine = if ($summary) { "`n*요약:* $summary" } else { "" }
+$commitLine  = if ($lastCommit) { "`n*최근 커밋:* $lastCommit" } else { "" }
+
 $body = @{
     username   = "Claude Code"
     icon_emoji = ":white_check_mark:"
-    text       = "✅ *작업 완료 알림*`n`n*프로젝트:* $projectName`n*시간:* $timestamp`n`nClaude Code 작업이 완료되었습니다."
+    text       = "✅ *작업 완료 알림*`n`n*프로젝트:* $projectName$summaryLine$commitLine`n*시간:* $timestamp`n`nClaude Code 작업이 완료되었습니다."
 } | ConvertTo-Json -Compress
 
 try {
