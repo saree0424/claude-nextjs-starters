@@ -1,5 +1,9 @@
 ﻿# Claude Code Stop 훅 - 작업 완료 알림 (작업 요약 포함)
 
+# 외부 명령어(git 등) 출력을 UTF-8로 읽기 위한 인코딩 설정
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+
 # stdin에서 JSON 읽기
 $inputData = $input | Out-String
 $summary = ""
