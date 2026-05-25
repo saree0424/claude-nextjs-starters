@@ -1,8 +1,8 @@
 #!/bin/bash
 # Claude Code Notification 훅 - 권한 요청 및 사용자 입력 대기 알림
 
-# stdin 소비 (Claude Code가 데이터를 전달할 수 있음)
-cat > /dev/null
+# stdin을 변수에 저장 (Claude Code가 JSON 데이터를 전달함)
+INPUT=$(cat)
 
 # .env 파일에서 Slack 웹훅 URL 로드
 if [ -f "$CLAUDE_PROJECT_DIR/.env" ]; then
@@ -17,6 +17,10 @@ if [ -z "$SLACK_WEBHOOK_URL" ]; then
     exit 1
 fi
 
+# jq로 JSON 입력에서 메시지 추출
+MESSAGE=$(echo "$INPUT" | jq -r '.message // empty' 2>/dev/null)
+
+
 PROJECT_NAME=$(basename "$CLAUDE_PROJECT_DIR")
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 WEBHOOK_URL="$SLACK_WEBHOOK_URL"
@@ -26,7 +30,7 @@ powershell.exe -NoProfile -Command "
 \$body = @{
     username   = 'Claude Code'
     icon_emoji = ':bell:'
-    text       = \"`u{1F514} *권한 요청 알림*\`n\`n*프로젝트:* $PROJECT_NAME\`n*시간:* $TIMESTAMP\`n\`nClaude Code에서 승인이 필요합니다.\"
+    text       = \"`u{1F514} *권한 요청 알림*\`n\`n*프로젝트:* $PROJECT_NAME\`n*MSG:* $MESSAGE\`n\`n*시간:* $TIMESTAMP\`n\`nClaude Code에서 승인이 필요합니다.\"
 } | ConvertTo-Json -Compress
 Invoke-RestMethod -Uri '$WEBHOOK_URL' -Method Post -Body \$body -ContentType 'application/json; charset=utf-8'
 " >&2
