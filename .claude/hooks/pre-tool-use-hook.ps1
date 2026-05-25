@@ -1,4 +1,4 @@
-# Claude Code PreToolUse 훅 - 위험 명령어 사전 감지 및 차단
+﻿# Claude Code PreToolUse 훅 - 위험 명령어 사전 감지 및 차단
 
 # stdin에서 JSON 읽기
 $inputData = $input | Out-String
