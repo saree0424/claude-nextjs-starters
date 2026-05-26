@@ -1,0 +1,30 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "S Starter" [ref=e5] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e6]: S
+      - generic [ref=e7]: Starter
+    - generic [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]: 다시 오신 것을 환영합니다
+        - generic [ref=e11]: 계정에 로그인하여 서비스를 이용하세요
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e15]: 이메일
+          - textbox "이메일" [ref=e16]:
+            - /placeholder: name@example.com
+        - generic [ref=e17]:
+          - generic [ref=e18]:
+            - generic [ref=e19]: 비밀번호
+            - link "비밀번호를 잊으셨나요?" [ref=e20] [cursor=pointer]:
+              - /url: /forgot-password
+          - textbox "비밀번호" [ref=e21]:
+            - /placeholder: ••••••••
+        - button "로그인하기" [ref=e22]
+      - paragraph [ref=e24]:
+        - text: 아직 계정이 없으신가요?
+        - link "회원가입" [ref=e25] [cursor=pointer]:
+          - /url: /register
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e31] [cursor=pointer]:
+    - img [ref=e32]

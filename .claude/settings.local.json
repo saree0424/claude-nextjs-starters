@@ -44,9 +44,18 @@
       "Bash(powershell.exe -NoProfile -Command ' *)",
       "Bash(powershell.exe *)",
       "Bash(mkdir -p /c/Users/saree/docs)",
-      "Read(//c/Users/saree/docs//**)"
+      "Read(//c/Users/saree/docs//**)",
+      "Bash(git push *)",
+      "PowerShell(New-Item *)",
+      "Bash(git checkout *)"
     ]
   },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "context7",
+    "shadcn",
+    "filesystem"
+  ],
   "hooks": {
     "PreToolUse": [
       {
